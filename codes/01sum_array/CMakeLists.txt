@@ -21,6 +21,6 @@ if (OPENMP_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif ()
 
-
+# 编译链接
 add_executable (01sum 01sum.cpp)
 target_link_libraries (01sum ${OpenMP_LIBRARIES} ${PCL_LIBRARIES}  ${OpenCV_LIBRARIES})
