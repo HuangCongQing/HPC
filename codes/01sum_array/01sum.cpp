@@ -4,7 +4,7 @@
  * @Company(School): UCAS
  * @Email: 1756260160@qq.com
  * @Date: 2022-01-31 00:05:38
- * @LastEditTime: 2022-01-31 02:03:30
+ * @LastEditTime: 2022-02-01 11:41:25
  * @FilePath: /HPC/codes/01sum_array/01sum.cpp
  */
 
@@ -22,8 +22,7 @@ using namespace std;
 #include <chrono>       // 时间must
 using namespace chrono; // 时间must
 
-int sum_array_normal(vector<double>& arr, int len)
-{
+int sum_array_normal(vector<double>& arr, int len){
     int sum = 0;
     for (int i = 0; i < len; ++i)
     {
@@ -33,19 +32,22 @@ int sum_array_normal(vector<double>& arr, int len)
     return sum;
 }
 // 
-int sum_array_openmp(vector<double>& arr, int len)
-{
+int sum_array_openmp(vector<double>& arr, int len){
     int sum = 0;
+    
+	omp_set_num_threads(10); // 线程数量  //设置线程数，一般设置的线程数不超过CPU核心数，这里开4个线程执行并行代码段
+
+    #pragma omp parallel for
+        for (int i = 0; i < len; ++i){
+            arr[i] = i;    // 赋值
+        }
     
     #pragma omp parallel
 	{
         #pragma omp for reduction(+:sum) // 每个线程拷贝一份sum变量，退出并行块时再把各个线程的sum相加
-        // #pragma omp for
-        for (int i = 0; i < len; ++i){
-            // #pragma omp critical //   critical制导语句标识的下一行代码，也可以是跟着一个大括号括起来的代码段做了同步处理
-            arr[i] = i;    // 赋值
-            sum += arr[i]; // 求和
-        }
+            for (int i = 0; i < len; ++i){
+                sum += arr[i]; // 求和
+            }
     }
     return sum;
 }
@@ -69,11 +71,6 @@ int main()
     std::cout << "##【normal】Extract  time: " << dr_ms << " ms， Result: " << sum << std::endl;
 
     // 处理2: OpenMP//设置线程数，一般设置的线程数不超过CPU核心数，这里开4个线程执行并行代码段
-	omp_set_num_threads(10); // 线程数量
-    // #pragma omp parallel
-	// {
-	// 	cout << "Hello" << ", I am Thread " << omp_get_thread_num() << endl;
-	// }
     sum = 0;
     sum = sum_array_openmp(a, len);
 
