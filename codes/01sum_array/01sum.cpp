@@ -4,7 +4,7 @@
  * @Company(School): UCAS
  * @Email: 1756260160@qq.com
  * @Date: 2022-01-31 00:05:38
- * @LastEditTime: 2022-02-01 11:41:25
+ * @LastEditTime: 2022-02-01 12:05:46
  * @FilePath: /HPC/codes/01sum_array/01sum.cpp
  */
 
@@ -26,7 +26,7 @@ int sum_array_normal(vector<double>& arr, int len){
     int sum = 0;
     for (int i = 0; i < len; ++i)
     {
-        arr[i] = i;    // 赋值
+        arr[i] = 1;    // 赋值
         sum += arr[i]; // 求和
     }
     return sum;
@@ -35,11 +35,11 @@ int sum_array_normal(vector<double>& arr, int len){
 int sum_array_openmp(vector<double>& arr, int len){
     int sum = 0;
     
-	omp_set_num_threads(10); // 线程数量  //设置线程数，一般设置的线程数不超过CPU核心数，这里开4个线程执行并行代码段
+	omp_set_num_threads(4); // 线程数量  //设置线程数，一般设置的线程数不超过CPU核心数，这里开4个线程执行并行代码段
 
     #pragma omp parallel for
         for (int i = 0; i < len; ++i){
-            arr[i] = i;    // 赋值
+            arr[i] = 1;    // 赋值
         }
     
     #pragma omp parallel
@@ -76,6 +76,6 @@ int main()
 
     auto t3 = std::chrono::steady_clock::now();
     double dr_ms1 = std::chrono::duration<double, std::milli>(t3 - t2).count(); //这一帧处理时间  毫秒ms
-    std::cout << "##【OpenMP】Extract  time: " << dr_ms1 << " ms， Result: " << sum << std::endl;
+    std::cout << "##【1 OpenMP】Extract  time: " << dr_ms1 << " ms， Result: " << sum << std::endl;
     return 0;
 }
